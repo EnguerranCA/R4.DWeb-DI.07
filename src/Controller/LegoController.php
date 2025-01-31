@@ -6,6 +6,9 @@ namespace App\Controller;
 // Import de la classe LEgo
 use App\Entity\Lego;
 
+// Import de la classe LegoService
+use App\Service\LegoService;
+
 /* indique l'utilisation du bon bundle pour gérer nos routes */
 
 use Symfony\Component\HttpFoundation\Response;
@@ -21,15 +24,12 @@ class LegoController extends AbstractController
     // que l'on accède à la racine de notre site.
 
     #[Route('/', name: 'lego')]
-    public function lego() : Response
+    public function lego(LegoService $legoService) : Response
     {
-        $lego =  new Lego(10252, "La coccinelle Volkwagen", "Creator Expert");
-        $lego->setboxImage('LEGO_10252_Box.png');
-        $lego->setPrice(94.99);
-        $lego->setDescription("Construis une réplique LEGO® Creator Expert de l'automobile la plus populaire au monde. Ce magnifique modèle LEGO est plein de détails authentiques qui capturent le charme et la personnalité de la voiture, notamment un coloris bleu ciel, des ailes arrondies, des jantes blanches avec des enjoliveurs caractéristiques, des phares ronds et des clignotants montés sur les ailes.");
-        $lego->setPieces(1167);
-        $lego->setLegoImage('LEGO_10252_Main.jpg');
+        // On récupère un objet Lego grâce à la méthode getLego() de LegoService
 
+        $lego = $legoService->getLego();
+        
         return $this->render('lego.html.twig', [
             'lego' => $lego
         ]);
