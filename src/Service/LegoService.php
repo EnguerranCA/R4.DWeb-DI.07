@@ -4,17 +4,33 @@
 namespace App\Service;
 
 use App\Entity\Lego;
+use \PDO;
 
 class LegoService
 {
+    private $pdo;
+
+    public function __construct()
+    {
+        $dsn = 'mysql:host=tp-symfony-mysql;dbname=lego_store;charset=utf8';
+        $username = 'root';
+        $password = 'root';
+        $this->pdo = new PDO($dsn, $username, $password);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+
     public function getLego(): Lego
     {
-        $lego =  new Lego(10252, "La coccinelle Volkwagen", "Creator Expert");
-        $lego->setboxImage('LEGO_10252_Box.png');
-        $lego->setPrice(94.99);
-        $lego->setDescription("Construis une réplique LEGO® Creator Expert de l'automobile la plus populaire au monde. Ce magnifique modèle LEGO est plein de détails authentiques qui capturent le charme et la personnalité de la voiture, notamment un coloris bleu ciel, des ailes arrondies, des jantes blanches avec des enjoliveurs caractéristiques, des phares ronds et des clignotants montés sur les ailes.");
-        $lego->setPieces(1167);
-        $lego->setLegoImage('LEGO_10252_Main.jpg');
+        $stmt = $this->pdo->query("SELECT * FROM lego WHERE id = 10252");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $lego = new Lego($row['id'], $row['name'], $row['collection']);
+        $lego->setboxImage($row['imagebox']);
+        $lego->setPrice($row['price']);
+        $lego->setDescription($row['description']);
+        $lego->setPieces($row['pieces']);
+        $lego->setLegoImage($row['imagebg']);
+
         return $lego;
     }
 }
