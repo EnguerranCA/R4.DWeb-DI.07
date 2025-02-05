@@ -19,18 +19,39 @@ class LegoService
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function getLego(): Lego
+    public function getLegos(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM lego WHERE id = 31062");
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->query("SELECT * FROM lego");
+        $legos = [];
 
-        $lego = new Lego($row['id'], $row['name'], $row['collection']);
-        $lego->setboxImage($row['imagebox']);
-        $lego->setPrice($row['price']);
-        $lego->setDescription($row['description']);
-        $lego->setPieces($row['pieces']);
-        $lego->setLegoImage($row['imagebg']);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $lego = new Lego($row['id'], $row['name'], $row['collection']);
+            $lego->setboxImage($row['imagebox']);
+            $lego->setPrice($row['price']);
+            $lego->setDescription($row['description']);
+            $lego->setPieces($row['pieces']);
+            $lego->setLegoImage($row['imagebg']);
+            $legos[] = $lego;
+        }
 
-        return $lego;
+        return $legos;
+    }
+
+    public function getLegosByCollection($collection): array
+    {
+        $stmt = $this->pdo->query("SELECT * FROM lego WHERE collection = '$collection'");
+        $legos = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $lego = new Lego($row['id'], $row['name'], $row['collection']);
+            $lego->setboxImage($row['imagebox']);
+            $lego->setPrice($row['price']);
+            $lego->setDescription($row['description']);
+            $lego->setPieces($row['pieces']);
+            $lego->setLegoImage($row['imagebg']);
+            $legos[] = $lego;
+        }
+
+        return $legos;
     }
 }

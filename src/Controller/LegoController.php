@@ -28,15 +28,96 @@ class LegoController extends AbstractController
     {
         // On récupère un objet Lego grâce à la méthode getLego() de LegoService
 
-        $lego = $legoService->getLego();
+        $legos = $legoService->getLegos();
         
-        return $this->render('lego.html.twig', [
-            'lego' => $lego
-        ]);
+        $response = new Response();
+        foreach ($legos as $lego) {
+            $response->setContent(
+                $response->getContent() . $this->renderView('lego.html.twig', [
+                    'lego' => $lego
+                ])
+            );
+        }
+        return $response;
     }
 
     #[Route('/me', name: 'me')]
     public function me(){
         die("Enguerran");
     }
+
+    // ROute pour star wars
+    // #[Route('/star_wars', name: 'filter_by_collection_star_wars')]
+    // public function legoStarWars(LegoService $legoService) : Response
+    // {
+    //     $legos = $legoService->getLegosByCollection(('Star Wars'));
+        
+    //     $response = new Response();
+    //     foreach ($legos as $lego) {
+    //         $response->setContent(
+    //             $response->getContent() . $this->renderView('lego.html.twig', [
+    //                 'lego' => $lego
+    //             ])
+    //         );
+    //     }
+    //     return $response;
+    // }
+
+    // // Route pour creator Expert
+    // #[Route('/creator_expert', name: 'filter_by_collection_creator_expert')]
+    // public function legoCreatorExpert(LegoService $legoService) : Response
+    // {
+    //     $legos = $legoService->getLegosByCollection(('Creator Expert'));
+        
+    //     $response = new Response();
+    //     foreach ($legos as $lego) {
+    //         $response->setContent(
+    //             $response->getContent() . $this->renderView('lego.html.twig', [
+    //                 'lego' => $lego
+    //             ])
+    //         );
+    //     }
+    //     return $response;
+    // }
+
+    // // Route pour Creator
+    // #[Route('/creator', name: 'filter_by_collection_creator')]
+    // public function legoCreator(LegoService $legoService) : Response
+    // {
+    //     $legos = $legoService->getLegosByCollection(('Creator'));
+        
+    //     $response = new Response();
+    //     foreach ($legos as $lego) {
+    //         $response->setContent(
+    //             $response->getContent() . $this->renderView('lego.html.twig', [
+    //                 'lego' => $lego
+    //             ])
+    //         );
+    //     }
+    //     return $response;
+    // }
+
+    #[Route('/{collection}', name: 'filter_by_collection', requirements: ['collection' => 'creator|star_wars|creator_expert'])]
+    public function filter(LegoService $legoService, string $collection): Response
+    {
+        if ($collection === 'star_wars') {
+            $collection = 'Star Wars';
+        } elseif ($collection === 'creator_expert') {
+            $collection = 'Creator Expert';
+        } elseif ($collection === 'creator') {
+            $collection = 'Creator';
+        }   
+        $legos = $legoService->getLegosByCollection($collection);
+        
+        $response = new Response();
+        foreach ($legos as $lego) {
+            $response->setContent(
+                $response->getContent() . $this->renderView('lego.html.twig', [
+                    'lego' => $lego
+                ])
+            );
+        }
+        return $response;
+    }
+
 }
