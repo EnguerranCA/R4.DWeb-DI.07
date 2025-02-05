@@ -21,7 +21,7 @@ class LegoService
 
     public function getLego(): Lego
     {
-        $stmt = $this->pdo->query("SELECT * FROM lego WHERE id = 10252");
+        $stmt = $this->pdo->query("SELECT * FROM lego WHERE id = 31062");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $lego = new Lego($row['id'], $row['name'], $row['collection']);
