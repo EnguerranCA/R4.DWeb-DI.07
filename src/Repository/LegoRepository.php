@@ -19,17 +19,16 @@ class LegoRepository extends ServiceEntityRepository
     //    /**
     //     * @return Lego[] Returns an array of Lego objects
     //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        public function findByCollection($collection): array
+        {
+            return $this->createQueryBuilder('l')
+            ->andWhere('l.collection = :collection')
+            ->setParameter('collection', $collection)
+            ->orderBy('l.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+        }
 
     //    public function findOneBySomeField($value): ?Lego
     //    {
