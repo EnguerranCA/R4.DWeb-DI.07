@@ -5,7 +5,7 @@ namespace App\Controller;
 
 // Import de la classe LEgo
 use App\Entity\Lego;
-
+use App\Repository\LegoRepository;
 // Import de la classe LegoService
 use App\Service\LegoService;
 
@@ -24,11 +24,11 @@ class LegoController extends AbstractController
     // que l'on accède à la racine de notre site.
 
     #[Route('/', name: 'lego')]
-    public function lego(LegoService $legoService) : Response
+    public function lego(LegoRepository $legoService) : Response
     {
         // On récupère un objet Lego grâce à la méthode getLego() de LegoService
 
-        $legos = $legoService->getLegos();
+        $legos = $legoService->findAll();
         
         $response = new Response();
         foreach ($legos as $lego) {
@@ -98,7 +98,7 @@ class LegoController extends AbstractController
     // }
 
     #[Route('/{collection}', name: 'filter_by_collection', requirements: ['collection' => 'creator|star_wars|creator_expert'])]
-    public function filter(LegoService $legoService, string $collection): Response
+    public function filter(LegoRepository $legoService, string $collection): Response
     {
         if ($collection === 'star_wars') {
             $collection = 'Star Wars';
@@ -107,7 +107,7 @@ class LegoController extends AbstractController
         } elseif ($collection === 'creator') {
             $collection = 'Creator';
         }   
-        $legos = $legoService->getLegosByCollection($collection);
+        $legos = $legoService->findByCollection($collection);
         
         $response = new Response();
         foreach ($legos as $lego) {
