@@ -14,6 +14,9 @@ use App\Service\LegoService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\LegoCollectionRepository;
+use App\Entity\LegoCollection;
+
 
 
 /* le nom de la classe doit être cohérent avec le nom du fichier */
@@ -23,6 +26,13 @@ class LegoController extends AbstractController
     // "/" à la méthode lego() pour que Symfony l'exécute chaque fois
     // que l'on accède à la racine de notre site.
 
+    #[Route('/test/{id}', 'test')]
+    public function test(LegoCollection $collection): Response
+    {
+        dd($collection);
+    }
+
+
     #[Route('/', name: 'lego')]
     public function lego(LegoRepository $legoService) : Response
     {
@@ -30,11 +40,14 @@ class LegoController extends AbstractController
 
         $legos = $legoService->findAll();
         
+        
         $response = new Response();
         foreach ($legos as $lego) {
             $response->setContent(
                 $response->getContent() . $this->renderView('lego.html.twig', [
+                    $lego->collection = $lego->getCategory()->getName(),
                     'lego' => $lego
+
                 ])
             );
         }
@@ -113,6 +126,7 @@ class LegoController extends AbstractController
         foreach ($legos as $lego) {
             $response->setContent(
                 $response->getContent() . $this->renderView('lego.html.twig', [
+                    $lego->collection = $lego->getCategory()->getName(),
                     'lego' => $lego
                 ])
             );

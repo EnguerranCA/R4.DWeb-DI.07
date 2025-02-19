@@ -31,6 +31,10 @@ class Lego
     #[ORM\Column]
     private ?float $price = null;
 
+    #[ORM\ManyToOne(inversedBy: 'legos')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?LegoCollection $category = null;
+
 
     public function getId(): ?int
     {
@@ -105,6 +109,18 @@ class Lego
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCategory(): ?LegoCollection
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?LegoCollection $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
