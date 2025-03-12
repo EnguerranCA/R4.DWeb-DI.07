@@ -3,10 +3,15 @@
 {% block body %}
 
         <nav>
+            <a href="{{ path('lego_store_login') }}">Login</a>
             <a href="/">Home</a> |  
             {% for category in categories %}
               <a href="/{{ category.id }}">{{ category.name }}</a>{% if not loop.last %} | {% endif %}
             {% endfor %}
+
+            <a href="/cart">Bonjour {{ email }}</a>
+
+            {# <a href="{{ path('lego_store_logout') }}">Logout</a> #}
       </nav>  
 <div class="lego_card">
       <div class="info_section">
@@ -17,7 +22,7 @@
           <span class="pieces">Pièces : {{lego.pieces}}</span>
           <p class="price">{{lego.price}}€</p><br>
           <a href="index.php?buy={{lego.id}}"><button>Buy</button></a>
-        </div>
+        </div>  
         <div class="lego_desc">
           <p class="text">
             {{lego.description}}

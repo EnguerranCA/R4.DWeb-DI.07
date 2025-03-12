@@ -16,8 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\LegoCollectionRepository;
 use App\Entity\LegoCollection;
-
-
+use App\Entity\User;
 
 /* le nom de la classe doit être cohérent avec le nom du fichier */
 class LegoController extends AbstractController
@@ -36,6 +35,9 @@ class LegoController extends AbstractController
     #[Route('/', name: 'lego')]
     public function lego(LegoRepository $legoService, LegoCollectionRepository $legoCollectionsService) : Response
     {
+        $user = $this->getUser();
+        $email = $user ? $user->getEmail() : 'guest@example.com';
+        
         // On récupère un objet Lego grâce à la méthode getLego() de LegoService
         $legos = $legoService->findAll();
 
@@ -54,7 +56,8 @@ class LegoController extends AbstractController
                 $response->getContent() . $this->renderView('lego.html.twig', [
                     $lego->collection = $lego->getCategory()->getName(),
                     'lego' => $lego,
-                    'categories' => $categories
+                    'categories' => $categories,
+                    'email' => $email
                 ])
             );
         }
@@ -119,24 +122,30 @@ class LegoController extends AbstractController
     #[Route('/{collection}', name: 'filter_by_collection', requirements: ['collection' => 'creator|star_wars|creator_expert|[0-9]+'])]
     public function filter(LegoRepository $legoService, LegoCollectionRepository $legoCollectionsService, string $collection): Response
     {
+        $user = $this->getUser();
+        $email = $user ? $user->getEmail() : 'guest@example.com';
+
         $legos = $legoService->findByCollection($collection);
 
         $collections = $legoCollectionsService->findAll();
         $categories = [];
         foreach ($collections as $collection) {
             $categories[] = [
-            'id' => $collection->getId(),
-            'name' => $collection->getName()
+                'id' => $collection->getId(),
+                'name' => $collection->getName()
             ];
         }
 
+
         $response = new Response();
+
         foreach ($legos as $lego) {
             $response->setContent(
                 $response->getContent() . $this->renderView('lego.html.twig', [
                     $lego->collection = $lego->getCategory()->getName(),
                     'lego' => $lego,
-                    'categories' => $categories
+                    'categories' => $categories,
+                    'email' => $email
                 ])
             );
         }
