@@ -19,11 +19,11 @@ class LegoRepository extends ServiceEntityRepository
     //    /**
     //     * @return Lego[] Returns an array of Lego objects
     //     */
-        public function findByCollection($collection): array
+        public function findByCollection($categoryId): array
         {
             return $this->createQueryBuilder('l')
-            ->andWhere('l.collection = :collection')
-            ->setParameter('collection', $collection)
+            ->andWhere('l.category = :category')
+            ->setParameter('category', $categoryId)
             ->orderBy('l.id', 'ASC')
             ->getQuery()
             ->getResult()

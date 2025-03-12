@@ -34,26 +34,32 @@ class LegoController extends AbstractController
 
 
     #[Route('/', name: 'lego')]
-    public function lego(LegoRepository $legoService) : Response
+    public function lego(LegoRepository $legoService, LegoCollectionRepository $legoCollectionsService) : Response
     {
         // On récupère un objet Lego grâce à la méthode getLego() de LegoService
-
         $legos = $legoService->findAll();
-        
-        
+
+        $collections = $legoCollectionsService->findAll();
+        $categories = [];
+        foreach ($collections as $collection) {
+            $categories[] = [
+                'id' => $collection->getId(),
+                'name' => $collection->getName()
+            ];
+        }
+
         $response = new Response();
         foreach ($legos as $lego) {
             $response->setContent(
                 $response->getContent() . $this->renderView('lego.html.twig', [
                     $lego->collection = $lego->getCategory()->getName(),
-                    'lego' => $lego
-
+                    'lego' => $lego,
+                    'categories' => $categories
                 ])
             );
         }
         return $response;
     }
-
     #[Route('/me', name: 'me')]
     public function me(){
         die("Enguerran");
@@ -110,24 +116,27 @@ class LegoController extends AbstractController
     //     return $response;
     // }
 
-    #[Route('/{collection}', name: 'filter_by_collection', requirements: ['collection' => 'creator|star_wars|creator_expert'])]
-    public function filter(LegoRepository $legoService, string $collection): Response
+    #[Route('/{collection}', name: 'filter_by_collection', requirements: ['collection' => 'creator|star_wars|creator_expert|[0-9]+'])]
+    public function filter(LegoRepository $legoService, LegoCollectionRepository $legoCollectionsService, string $collection): Response
     {
-        if ($collection === 'star_wars') {
-            $collection = 'Star Wars';
-        } elseif ($collection === 'creator_expert') {
-            $collection = 'Creator Expert';
-        } elseif ($collection === 'creator') {
-            $collection = 'Creator';
-        }   
         $legos = $legoService->findByCollection($collection);
-        
+
+        $collections = $legoCollectionsService->findAll();
+        $categories = [];
+        foreach ($collections as $collection) {
+            $categories[] = [
+            'id' => $collection->getId(),
+            'name' => $collection->getName()
+            ];
+        }
+
         $response = new Response();
         foreach ($legos as $lego) {
             $response->setContent(
                 $response->getContent() . $this->renderView('lego.html.twig', [
                     $lego->collection = $lego->getCategory()->getName(),
-                    'lego' => $lego
+                    'lego' => $lego,
+                    'categories' => $categories
                 ])
             );
         }

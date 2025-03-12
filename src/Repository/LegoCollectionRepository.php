@@ -31,6 +31,13 @@ class LegoCollectionRepository extends ServiceEntityRepository
     //        ;
     //    }
 
+    public function findAllCollections(): array
+    {
+        return $this->createQueryBuilder('l')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    public function findOneBySomeField($value): ?LegoCollection
     //    {
     //        return $this->createQueryBuilder('l')
